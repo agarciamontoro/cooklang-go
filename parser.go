@@ -29,6 +29,7 @@ type Cookware struct {
 	Name        string  // cookware name
 	Quantity    float64 // quantity of the cookware
 	QuantityRaw string  // quantity of the cookware as raw text
+	Idx         int     // starting position of Name in the step's Directions
 }
 
 // IngredientAmount represents the amount required of an ingredient
@@ -259,6 +260,15 @@ func parseRecipe(line string) (*Step, error) {
 			return nil, fmt.Errorf("failed to find ingredient %q in directions %q", step.Ingredients[i].Name, step.Directions)
 		}
 		step.Ingredients[i].Idx = idx
+	}
+
+	// Find the index of each cookware in the clean Directions string
+	for i := range step.Cookware {
+		idx := strings.Index(step.Directions, step.Cookware[i].Name)
+		if idx == -1 {
+			return nil, fmt.Errorf("failed to find cookware %q in directions %q", step.Cookware[i].Name, step.Directions)
+		}
+		step.Cookware[i].Idx = idx
 	}
 
 	return &step, nil
