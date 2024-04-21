@@ -151,7 +151,7 @@ func TestParseString(t *testing.T) {
 					{
 						Directions:  "Place the beacon in the oven for 20 minutes.",
 						Ingredients: []Ingredient{},
-						Timers:      []Timer{{"", 20.00, "minutes"}},
+						Timers:      []Timer{{Name: "", Duration: 20.00, Unit: "minutes", Idx: 33}},
 						Cookware:    []Cookware{},
 					},
 				},
@@ -176,7 +176,7 @@ Put in an #oven for ~{4%minutes}.`,
 				Steps: []Step{
 					{
 						Directions: "Make 6 pizza balls using tipo zero flour, water, salt and fresh yeast. Put in a fridge for 2 days.",
-						Timers:     []Timer{{Duration: 2, Unit: "days"}},
+						Timers:     []Timer{{Duration: 2, Unit: "days", Idx: 91}},
 						Ingredients: []Ingredient{
 							{Name: "tipo zero flour", Amount: IngredientAmount{true, 820., "820", "g"}, Idx: 25},
 							{Name: "water", Amount: IngredientAmount{true, 533, "533", "ml"}, Idx: 42},
@@ -187,7 +187,7 @@ Put in an #oven for ~{4%minutes}.`,
 					},
 					{
 						Directions:  "Set oven to max temperature and heat pizza stone for about 40 minutes.",
-						Timers:      []Timer{{Duration: 40, Unit: "minutes"}},
+						Timers:      []Timer{{Duration: 40, Unit: "minutes", Idx: 59}},
 						Ingredients: []Ingredient{},
 						Cookware: []Cookware{
 							{Name: "oven", Quantity: 1, IsNumeric: false, QuantityRaw: "", Idx: 4},
@@ -196,7 +196,7 @@ Put in an #oven for ~{4%minutes}.`,
 					},
 					{
 						Directions: "Make some tomato sauce with chopped tomato and garlic and dried oregano. Put on a pan and leave for 15 minutes occasionally stirring.",
-						Timers:     []Timer{{Duration: 15, Unit: "minutes"}},
+						Timers:     []Timer{{Duration: 15, Unit: "minutes", Idx: 100}},
 						Ingredients: []Ingredient{
 							{Name: "chopped tomato", Amount: IngredientAmount{true, 3, "3", "cans"}, Idx: 28},
 							{Name: "garlic", Amount: IngredientAmount{true, 3, "3", "cloves"}, Idx: 47},
@@ -216,7 +216,7 @@ Put in an #oven for ~{4%minutes}.`,
 					},
 					{
 						Directions:  "Put in an oven for 4 minutes.",
-						Timers:      []Timer{{Duration: 4, Unit: "minutes"}},
+						Timers:      []Timer{{Duration: 4, Unit: "minutes", Idx: 19}},
 						Ingredients: []Ingredient{},
 						Cookware:    []Cookware{{Name: "oven", Quantity: 1, IsNumeric: false, QuantityRaw: "", Idx: 10}},
 					},
@@ -331,9 +331,10 @@ func Test_getTimer(t *testing.T) {
 				"~potato{42%minutes}",
 			},
 			&Timer{
-				"potato",
-				42,
-				"minutes",
+				Name:     "potato",
+				Duration: 42,
+				Unit:     "minutes",
+				Idx:      0,
 			},
 			false,
 		},
@@ -343,9 +344,10 @@ func Test_getTimer(t *testing.T) {
 				"~{42%minutes}",
 			},
 			&Timer{
-				"",
-				42,
-				"minutes",
+				Name:     "",
+				Duration: 42,
+				Unit:     "minutes",
+				Idx:      0,
 			},
 			false,
 		},

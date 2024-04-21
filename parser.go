@@ -52,6 +52,7 @@ type Timer struct {
 	Name     string  // name of the timer
 	Duration float64 // duration of the timer
 	Unit     string  // time unit of the duration
+	Idx      int     // starting position of Name in the step's Directions
 }
 
 // Step represents a recipe step
@@ -220,7 +221,7 @@ func parseRecipe(line string) (*Step, error) {
 			}
 			skipIndex = index + skipNext
 			step.Timers = append(step.Timers, *timer)
-			directions.WriteString(fmt.Sprintf("%v %s", (*timer).Duration, (*timer).Unit))
+			directions.WriteString(formatTimer(*timer))
 			continue
 		}
 		if ch == prefixBlockComment {
@@ -262,6 +263,15 @@ func parseRecipe(line string) (*Step, error) {
 		step.Ingredients[i].Idx = idx
 	}
 
+	// Find the index of each timer in the clean Directions string
+	for i := range step.Timers {
+		idx := strings.Index(step.Directions, formatTimer(step.Timers[i]))
+		if idx == -1 {
+			return nil, fmt.Errorf("failed to find timer %q in directions %q", step.Timers[i].Name, step.Directions)
+		}
+		step.Timers[i].Idx = idx
+	}
+
 	// Find the index of each cookware in the clean Directions string
 	for i := range step.Cookware {
 		idx := strings.Index(step.Directions, step.Cookware[i].Name)
@@ -290,6 +300,10 @@ func getTimer(line string) (*Timer, int, error) {
 	endIndex := findNodeEndIndex(line)
 	timer, err := getTimerFromRawString(line[1:endIndex])
 	return timer, endIndex, err
+}
+
+func formatTimer(t Timer) string {
+	return fmt.Sprintf("%v %s", t.Duration, t.Unit)
 }
 
 func getBlockComment(s string) (string, int, error) {
