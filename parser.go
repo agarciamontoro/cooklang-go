@@ -43,6 +43,7 @@ type IngredientAmount struct {
 type Ingredient struct {
 	Name   string           // name of the ingredient
 	Amount IngredientAmount // optional ingredient amount (default: 1)
+	Idx    int              // starting position of Name in the step's Directions
 }
 
 // Timer represents a time duration
@@ -250,6 +251,16 @@ func parseRecipe(line string) (*Step, error) {
 		directions.WriteRune(ch)
 	}
 	step.Directions = strings.TrimSpace(directions.String())
+
+	// Find the index of each ingredient in the clean Directions string
+	for i := range step.Ingredients {
+		idx := strings.Index(step.Directions, step.Ingredients[i].Name)
+		if idx == -1 {
+			return nil, fmt.Errorf("failed to find ingredient %q in directions %q", step.Ingredients[i].Name, step.Directions)
+		}
+		step.Ingredients[i].Idx = idx
+	}
+
 	return &step, nil
 }
 
