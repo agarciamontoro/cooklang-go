@@ -188,10 +188,15 @@ func parseRecipe(line string) (*Step, error) {
 	var timer *Timer
 	var comment string
 	for index, ch := range line {
+		// Look ahead for the next char, defaulting to a space
+		var nextCh rune = ' '
+		if len(line) > index+1 {
+			nextCh = rune(line[index+1])
+		}
 		if skipIndex > index {
 			continue
 		}
-		if ch == prefixIngredient {
+		if ch == prefixIngredient && nextCh != ' ' {
 			// ingredient ahead
 			ingredient, skipNext, err = getIngredient(line[index:])
 			if err != nil {
@@ -202,7 +207,7 @@ func parseRecipe(line string) (*Step, error) {
 			directions.WriteString((*ingredient).Name)
 			continue
 		}
-		if ch == prefixCookware {
+		if ch == prefixCookware && nextCh != ' ' {
 			// Cookware ahead
 			Cookware, skipNext, err = getCookware(line[index:])
 			if err != nil {
@@ -213,7 +218,7 @@ func parseRecipe(line string) (*Step, error) {
 			directions.WriteString((*Cookware).Name)
 			continue
 		}
-		if ch == prefixTimer {
+		if ch == prefixTimer && nextCh != ' ' {
 			//timer ahead
 			timer, skipNext, err = getTimer(line[index:])
 			if err != nil {

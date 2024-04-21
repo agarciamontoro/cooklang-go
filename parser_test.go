@@ -242,6 +242,102 @@ Put in an #oven for ~{4%minutes}.`,
 			},
 			false,
 		},
+		{
+			"Invalid timer - single word",
+			"It is ~ 5",
+			&Recipe{
+				Steps: []Step{
+					{
+						Directions:  "It is ~ 5",
+						Timers:      []Timer{},
+						Ingredients: []Ingredient{},
+						Cookware:    []Cookware{},
+					},
+				},
+				Metadata: make(Metadata),
+			},
+			false,
+		},
+		{
+			"Invalid timer - multi word",
+			"It is ~ {5}",
+			&Recipe{
+				Steps: []Step{
+					{
+						Directions:  "It is ~ {5}",
+						Timers:      []Timer{},
+						Ingredients: []Ingredient{},
+						Cookware:    []Cookware{},
+					},
+				},
+				Metadata: make(Metadata),
+			},
+			false,
+		},
+		{
+			"Invalid ingredient - single word",
+			"Message me @ example",
+			&Recipe{
+				Steps: []Step{
+					{
+						Directions:  "Message me @ example",
+						Timers:      []Timer{},
+						Ingredients: []Ingredient{},
+						Cookware:    []Cookware{},
+					},
+				},
+				Metadata: make(Metadata),
+			},
+			false,
+		},
+		{
+			"Invalid ingredient - multi word",
+			"Message @ example{}",
+			&Recipe{
+				Steps: []Step{
+					{
+						Directions:  "Message @ example{}",
+						Timers:      []Timer{},
+						Ingredients: []Ingredient{},
+						Cookware:    []Cookware{},
+					},
+				},
+				Metadata: make(Metadata),
+			},
+			false,
+		},
+		{
+			"Invalid cookware - single word",
+			"Recipe # 5",
+			&Recipe{
+				Steps: []Step{
+					{
+						Directions:  "Recipe # 5",
+						Timers:      []Timer{},
+						Ingredients: []Ingredient{},
+						Cookware:    []Cookware{},
+					},
+				},
+				Metadata: make(Metadata),
+			},
+			false,
+		},
+		{
+			"Invalid cookware - multi word",
+			"Recipe # 10{}",
+			&Recipe{
+				Steps: []Step{
+					{
+						Directions:  "Recipe # 10{}",
+						Timers:      []Timer{},
+						Ingredients: []Ingredient{},
+						Cookware:    []Cookware{},
+					},
+				},
+				Metadata: make(Metadata),
+			},
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
